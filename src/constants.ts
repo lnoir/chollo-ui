@@ -8,3 +8,6 @@ export const DB_CREATE_STATEMENTS = [
     defaultVal TEXT DEFAULT "0"
   )`
 ];
+
+export const sourceKey = Symbol();
+export const formatKey = Symbol();

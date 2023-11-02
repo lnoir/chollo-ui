@@ -15,7 +15,7 @@ export const WebSource: Story = {
     source: {
       id: 1,
       type: 'web',
-      name: 'My Doc Source',
+      name: 'My Web Source',
       location: 'http://example.com',
       created: '2023-31-01T09:00:00Z',
       formats: []
@@ -34,4 +34,23 @@ export const FileSource: Story = {
       formats: []
     }
   }
+}
+
+export const SourceWithFormats: Story = {
+  args: {
+    source: {
+      id: 1,
+      type: 'web',
+      name: 'My Doc Source',
+      location: 'http://website.test',
+      created: '2023-31-01T09:00:00Z',
+      formats: [{
+        id: 1,
+        name: 'Test format',
+        location: '/',
+        type: 'html',
+        created: '2023-31-01T09:01:00Z' 
+      }]
+    }
+  },
 }

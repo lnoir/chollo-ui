@@ -76,6 +76,7 @@
   "dependencies": {
     "@tabler/icons-svelte": "^2.39.0",
     "dexie": "^4.0.1-beta.1",
+    "felte": "^1.2.12",
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1",
     "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#v1"
   },

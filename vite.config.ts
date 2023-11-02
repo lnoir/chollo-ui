@@ -13,9 +13,15 @@ export default defineConfig({
 		globals: true,
 		includeSource: ['src/**/*.{ts,svelte}'],
 		environment: 'jsdom',
-		alias: [{
-			find: /^svelte$/,
-			replacement: 'svelte/internal' 
-		}],
+		alias: [
+			{
+				find: /^svelte$/,
+				replacement: 'svelte/internal' 
+			},
+			{
+				find: /^\~icons(.*)/,
+				replacement: 'virtual:icons$1'
+			}
+		],
 	},
 });

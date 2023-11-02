@@ -12,3 +12,41 @@
 		color: rgb(203, 213, 225);
 	}
 }
+
+input, textarea {
+	padding: 8px 12px;
+}
+
+label {
+	margin-bottom: 12px;
+}
+
+/*
+Style isn't being applied on select,
+resulting in an out-of-place native select.
+*/
+select {
+	appearance: none;
+	background-color: transparent;
+	outline: none;
+}
+
+.select {
+	width: 100%;
+	min-width: 15ch;
+	border-radius: 0.375em;
+	padding: 0.25em 0.5em;
+	font-size: 1rem;
+	padding: 0.7rem;
+	cursor: pointer;
+	line-height: 1.1;
+	background-color: #fff;
+}
+
+.select::after {
+  content: "";
+  width: 0.8em;
+  height: 0.5em;
+  background-color: var(--select-arrow);
+  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+}

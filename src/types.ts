@@ -46,85 +46,78 @@ export type DataObject = {
 	[key: string]: DbValue;
 };
 
-// Types for DocSource
+export type ObjectRecord = {
+  created: string;
+  updated?: string;
+  deleted?: string;
+}
+
 export type DocSource = {
-  id: number;
+  id?: number;
   type: 'web' | 'drive' | 'text';
   name: string;
   location: string;
-  formats: DocFormat[];
-  created: string;
-  updated?: string;
-  deleted?: string;
 };
 
-// Types for DocFormat
+export type DocSourceRecord = DocSource & ObjectRecord & {
+  formats?: DocFormatRecord[];
+};
+
 export type DocFormat = {
-  id: number;
+  id?: number;
   type: 'html' | 'json' | 'xml' | 'text';
   name: string;
   location: string;
-  source: DocSource;
-  config: DocConfig;
-  created: string;
-  updated?: string;
-  deleted?: string;
+  source?: number;
+  config?: DocConfig;
 };
 
-// Types for DocConfig
+export type DocFormatRecord = DocFormat & ObjectRecord;
+
 export type DocConfig = {
-  id: number;
+  id?: number;
   selector_type?: 'element' | 'pattern';
   selector?: string;
   map?: Record<string, any>;
   js: boolean;
   format: DocFormat;
-  created: string;
-  updated?: string;
-  deleted?: string;
 };
 
-// Types for Doc
+export type DocConfigRecord = DocConfig & ObjectRecord;
+
 export type Doc = {
-  id: number;
+  id?: number;
   key: string;
-  data: string;
+  data: any;
   type: string;
-  created: string;
-  updated?: string;
-  deleted?: string;
 };
 
-// Types for TaskScheduled
+export type DocRecord = Doc & ObjectRecord;
+
 export type TaskScheduled = {
-  id: number;
+  id?: number;
   source: DocSource;
   format: DocFormat;
   params?: string;
   steps: TaskStep[];
   scheduled: string;
   output: TaskOutput[];
-  created: string;
-  updated?: string;
-  deleted?: string;
 };
 
-// Types for TaskStep
+export type TaskScheduledRecord = TaskScheduled & ObjectRecord;
+
 export type TaskStep = {
-  id: number;
+  id?: number;
   task: TaskScheduled;
   position: number;
   agent: string;
   skill: string;
   params?: string;
   filters?: object[];
-  created: string;
-  updated?: string;
-  deleted?: string;
 };
 
-// Optional: Types for TaskOutput (Assuming you have a definition for it)
+export type TaskStepRecord = TaskStep & ObjectRecord;
+
 export type TaskOutput = {
-  // Your fields here
 	[key: string]: any;
 };
