@@ -15,7 +15,8 @@ const config = {
 		}),
 		alias: {
 			$components: 'src/lib/components',
-			$services: 'src/lib/services'
+			$services: 'src/lib/services',
+			$icons: 'src/lib/components/Icons/icon-files',
 		}
 	},
 	compilerOptions: {

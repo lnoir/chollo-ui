@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { selectedSource } from "../../../stores/app.store";
-	import SourceTypeIcon from "../Icons/SourceTypeIcon.svelte";
+	import SourceTypeIcon from "../Icons/IconSourceType.svelte";
 	import { get } from "svelte/store";
 
   export let source: any;
@@ -14,7 +14,7 @@
   <a href="/sources/{source.id}"
     on:click={handleClick}>
     <div class="flex">
-      <SourceTypeIcon name={source.type} pixels={20} />
+      <SourceTypeIcon icon={source.type} pixels="20" />
     </div>
     <div>
       <span class="block">{source.name}</span>

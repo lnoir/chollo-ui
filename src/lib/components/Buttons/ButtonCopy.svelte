@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IconCopy from 'virtual:icons/tabler/copy';
+	import Chollocon from '../Icons/Chollocon.svelte';
 
 	type Position = 'top' | 'bottom';
 
@@ -18,5 +18,5 @@
 	class:top-5={position === 'top'}
 	class:bottom-5={position !== 'top'}
 	on:click={copyToClipboard}>
-	<IconCopy />
+	<Chollocon name="copy" />
 </button>

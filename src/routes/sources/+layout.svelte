@@ -17,7 +17,7 @@
     <SourceList {sources} />
   </div>
   {#if $selectedSource}
-  <div class="p-10">
+  <div class="p-4">
     <slot />
   </div>
   {/if}

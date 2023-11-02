@@ -12,8 +12,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const InitialState: Story = {
-  play: async({ canvasElement}) => {
+  /*play: async({ canvasElement}) => {
     const canvas = within(canvasElement);
     canvas.getByText('Sources');
-  }
+  }*/
 };

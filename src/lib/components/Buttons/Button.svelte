@@ -31,7 +31,8 @@
 <button {type} {title} class="btn btn-{size} {buttonVariant}"
   class:rounded-full={round}
   class:rounded-md={!round}
-  on:click>
+  on:click
+  {...$$restProps}>
   <slot>
     {title}
   </slot>

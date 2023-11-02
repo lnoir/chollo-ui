@@ -24,7 +24,6 @@
   "devDependencies": {
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
-    "@iconify-json/tabler": "^1.1.95",
     "@skeletonlabs/skeleton": "^2.3.0",
     "@skeletonlabs/tw-plugin": "^0.2.2",
     "@storybook/addon-essentials": "^7.5.2",
@@ -67,7 +66,6 @@
     "tailwindcss": "^3.3.3",
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
-    "unplugin-icons": "^0.17.1",
     "vite": "^4.5.0",
     "vitest": "^0.34.6",
     "wait-on": "^7.0.1"

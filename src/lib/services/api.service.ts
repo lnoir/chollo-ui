@@ -91,6 +91,11 @@ class CholloService {
 		const path = this.preparePath(`/docs/format`, data);
 		return this.putOrPost(path, data);
 	}
+	
+	async saveDocConfig(data: DocConfig): Promise<any> {
+		const path = this.preparePath(`/docs/config`, data);
+		return this.putOrPost(path, data);
+	}
 }
 
 export const apiService = new CholloService();

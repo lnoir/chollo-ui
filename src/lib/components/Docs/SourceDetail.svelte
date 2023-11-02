@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { DocSource, DocSourceRecord } from "../../../types";
 	import Button from "../Buttons/Button.svelte";
-	import SourceTypeIcon from "../Icons/SourceTypeIcon.svelte";
+	import SourceTypeIcon from "../Icons/IconSourceType.svelte";
 	import { goto } from "$app/navigation";
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
 

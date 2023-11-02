@@ -4,7 +4,6 @@
 	import { apiService } from '../../../lib/services/api.service';
 	import type { DocSourceRecord } from '../../../types';
 	import { selectedSource } from '../../../stores/app.store';
-	import { get } from 'svelte/store';
 
 	let sourceId: number;
 	let source: DocSourceRecord;
@@ -18,7 +17,7 @@
 
 <section class="bg-gray-900 h-full rounded-md">
 	<SourceDetail {source} />
-  <div class="child-route p-10">
+  <div class="child-route p-4">
     <slot />
   </div>
 </section>

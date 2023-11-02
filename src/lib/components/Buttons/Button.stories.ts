@@ -17,11 +17,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const DefaultButton: Story = {};
+export const DefaultButton: Story = {
+  args: {
+    title: 'Default Btn'
+  }
+};
 
 export const Secondary: Story = {
   args: {
-    title: 'Button',
+    title: 'Secondary Btn',
   },
 };
 

@@ -80,10 +80,11 @@ export type DocConfig = {
   selector?: string;
   map?: Record<string, any>;
   js: boolean;
-  format: DocFormat;
 };
 
-export type DocConfigRecord = DocConfig & ObjectRecord;
+export type DocConfigRecord = DocConfig & ObjectRecord & {
+  format: DocFormat;
+};
 
 export type Doc = {
   id?: number;

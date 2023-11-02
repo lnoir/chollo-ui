@@ -15,7 +15,7 @@
   <h2 class="text-2xl">Formats</h2>
   {#if source}
   <div class="flex my-8">
-    <Button on:click={() => goto(`/sources/${source.id}/formats/create`)}>
+    <Button size="sm" on:click={() => goto(`/sources/${source.id}/formats/create`)}>
       Add Format
     </Button>
   </div>

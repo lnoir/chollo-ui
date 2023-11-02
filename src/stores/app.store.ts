@@ -6,9 +6,13 @@ import type {
 	DocSourceRecord,
 } from '../types';
 
-const defaultHost = 'http://127.0.0.1:38440';
+const apiHost = 'http://127.0.0.1:38440';
 
-export const cholloHost: Writable<string> = writable(defaultHost);
+// @TODO: Need a better approach here. Port could easily change
+// (Svelte will automatically switch if 5173 is unavailable)
+export const appHost = 'http://localhost:5173';
+
+export const cholloHost: Writable<string> = writable(apiHost);
 export const toastQueue: Writable<AppModalOptions[]> = writable([]);
 export const dialogQueue: Writable<AppModalOptions[]> = writable([]);
 export const loading: Writable<boolean> = writable(false);
