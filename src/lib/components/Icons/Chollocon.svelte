@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { SvelteComponent, afterUpdate, onMount, tick } from 'svelte';
 	import { appHost } from '../../../stores/app.store';
 
   type IconAlias = 'www' | 'web' | 'device' | 'drive' | 'x' | 'close' | 'copy';
@@ -11,6 +11,8 @@
 
   let svgEl: SVGElement;
   let icon: IconAlias = 'www';
+  let target: HTMLDivElement;
+  let component: SvelteComponent;
 
   const iconAliases = {
     'www': 'www',
@@ -19,7 +21,7 @@
     'drive': 'device',
     'x': 'x',
     'close': 'x',
-    'copy': 'copy'
+    'copy': 'copy',
   };
 
   onMount(async () => {
@@ -28,20 +30,27 @@
     await setupIconElement();
   });
 
+  afterUpdate(async () => {
+    if (component) {
+      component.$destroy();
+      target.innerHTML = '';
+      setIconFilename();
+      await setupIconElement();
+    }
+  });
+
   function setIconFilename() {
     icon = iconAliases[name] as IconAlias;
   }
 
   async function setupIconElement() {
-    const url = new URL(`/icons/${icon}.svg`, appHost);
-    const res = await fetch(url.href);
-    const content = await res.text();
-    const tempDiv = document.createElement('div');
-
-    tempDiv.innerHTML = content;
-    svgEl = tempDiv.firstChild as SVGElement;
-    updateStrokeAttributes(svgEl);
-    tempDiv.innerHTML = '';
+    const IconComponent = (await import(`./_IconComponents/icon-${icon}.svelte`)).default;
+    component = new IconComponent({
+      target,
+    });
+    await tick();
+    if (!target?.firstChild) return;
+    updateStrokeAttributes(target.firstChild as SVGElement);
   }
 
   // Update stroke attributes on the SVG element
@@ -63,6 +72,7 @@
 
 <div class="chollocon-container" style={`width: ${size}px; height: ${size}px;`}>
   {@html svgEl?.outerHTML || ''}
+  <div bind:this={target}></div>
 </div>
 
 <style>

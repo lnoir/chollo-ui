@@ -36,6 +36,8 @@ export const FileSource: Story = {
   }
 }
 
+/*
+// @TODO: figure out why this is making Storybook cry.
 export const SourceWithFormats: Story = {
   args: {
     source: {
@@ -53,4 +55,4 @@ export const SourceWithFormats: Story = {
       }]
     }
   },
-}
+}*/
