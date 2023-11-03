@@ -23,7 +23,7 @@ class CholloService {
 		this.baseUrl = `${host}/v1`;
 	}
 
-	private async get(url: string) {
+	private async read(url: string) {
 		const res = await fetch(`${this.baseUrl}${url}`);
 		return res.json();
 	}
@@ -33,22 +33,36 @@ class CholloService {
 		const opts = requestOptions || {};
 		const url = `${this.baseUrl}${path}`;
 		const res = await fetch(url, {
-			method: 'POST',
+			method,
 			body,
 			headers: {
 				"Content-Type": "application/json",
 			},
 			...opts
 		});
-		return res.body;
+		return res;
+	}
+
+	private async delete(path: string) {
+		const url = `${this.baseUrl}${path}`;
+		console.log('@DELETE', url)
+		const res = await fetch(url, {
+			method: 'DELETE',
+			headers: {
+				"Content-Type": "application/json",
+			},	
+		});
+		return res;
 	}
 
 	async post(path: string, data: object, requestOptions?: RequestOptions) {
-		return this.write('POST', path, data, requestOptions);
+		const res = await this.write('POST', path, data, requestOptions);
+		return res.json();
 	}
 
 	async put(path: string, data: object, requestOptions?: RequestOptions) {
-		return this.write('PUT', path, data, requestOptions);
+		const res = await this.write('PUT', path, data, requestOptions);
+		return res.json();
 	}
 
 	preparePath(path: string, data: WritableData) {
@@ -64,7 +78,7 @@ class CholloService {
 
 	async getDocSources(): Promise<any[]> {
 		try {
-			const res = await this.get('/docs/source');
+			const res = await this.read('/docs/source');
 			return res;
 		}
 		catch(err: any) {
@@ -75,7 +89,7 @@ class CholloService {
 	}
 
 	async getDocSource(id: string | number): Promise<any> {
-		return this.get(`/docs/source/${id}`);
+		return this.read(`/docs/source/${id}`);
 	}
 
 	async saveDocSource(data: DocSource): Promise<any> {
@@ -83,8 +97,13 @@ class CholloService {
 		return this.putOrPost(path, data);
 	}
 	
+	async deleteDocSource(id: number): Promise<any> {
+		const path = `/docs/source/${id}`;
+		return this.delete(path);
+	}
+	
 	async getDocFormat(id: string | number): Promise<any> {
-		return this.get(`/docs/format/${id}`);
+		return this.read(`/docs/format/${id}`);
 	}
 
 	async saveDocFormat(data: DocFormat): Promise<any> {

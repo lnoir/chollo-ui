@@ -2,17 +2,17 @@
 	import type { DocFormat, DocSource, DocSourceRecord } from "../../../types";
   import { createForm } from 'felte';
 	import { apiService } from "../../services/api.service";
-	import { pushMessage, selectedSource } from "../../../stores/app.store";
-	import { get } from "svelte/store";
+	import { pushMessage } from "../../../stores/app.store";
   import { emit } from '@tauri-apps/api/event';
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
+	import { getSelectedSource } from "../../helpers";
 
   export let format: DocFormat = {
     name: '',
     type: 'html',
     location: ''
   };
-  export let source: DocSource | DocSourceRecord = get(selectedSource);
+  export let source: DocSourceRecord = getSelectedSource();
 
   let errors: Record<string, string[]>;
   let submitted = false;

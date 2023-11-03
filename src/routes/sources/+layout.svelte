@@ -1,18 +1,29 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { apiService } from '../../lib/services/api.service';
 	import SourceList from '$components/Docs/SourceList.svelte';
 	import type { DocSource } from '../../types';
 	import { selectedSource } from '../../stores/app.store';
+  import { listen } from '@tauri-apps/api/event';
 
   let sources: DocSource[] = [];
+  let sub: any;
 
   onMount(async () => {
-    sources = await apiService.getDocSources();
+    refreshSources();
+    sub = await listen('source-list-refresh', refreshSources);
   });
+
+  onDestroy(() => {
+    if (sub) sub();
+  });
+
+  async function refreshSources() {
+    sources = await apiService.getDocSources();
+  }
 </script>
 
-<div class="grid grid-cols-2">
+<div class="grid grid-cols-2 dark:bg-gray-900">
   <div>
     <SourceList {sources} />
   </div>

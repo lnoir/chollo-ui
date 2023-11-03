@@ -25,7 +25,7 @@
   });
 
   onDestroy(() => {
-    if(unsub) unsub();
+    if (unsub !== undefined) unsub();
   });
 </script>
 

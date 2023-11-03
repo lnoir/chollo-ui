@@ -1,24 +1,70 @@
 <script lang="ts">
-	import { selectedSource } from "../../../stores/app.store";
+	import { onDestroy, onMount } from "svelte";
 	import SourceTypeIcon from "../Icons/IconSourceType.svelte";
-	import { get } from "svelte/store";
+	import { selectedSource } from "../../../stores/app.store";
+	import type { DocSourceRecord } from "../../../types";
+	import type { Unsubscriber } from "svelte/store";
+	import { showModal, showToastError, showToastSuccess } from "../../helpers";
+	import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
+	import ButtonDelete from "../Buttons/ButtonDelete.svelte";
+	import { apiService } from "../../services/api.service";
+  import { emit } from '@tauri-apps/api/event';
+	import { goto } from "$app/navigation";
 
   export let source: any;
+  
+  let selected: DocSourceRecord;
+  let sub: Unsubscriber;
 
-  function handleClick() {
-    selectedSource.update(() => source); // @TODO: remove
+  const modalStore = getModalStore();
+  const toastStore = getToastStore();
+
+  onMount(() => {
+    sub = selectedSource.subscribe(latest => {
+      selected = latest;
+    });
+  });
+
+  onDestroy(() => {
+    sub();
+  });
+  
+  function confirmDelete() {
+    showModal(modalStore, {
+      type: 'confirm',
+      title: `Delete <strong>${source.name}</strong>?`,
+      body: 'Are you you want to permanently remove this source?',
+      response: handleConfirm
+    });
+
+    async function handleConfirm(proceed: boolean) {
+      if (!proceed) return;
+      try {
+        await apiService.deleteDocSource(source.id);
+        await emit('source-list-refresh');
+        goto('/sources');
+        showToastSuccess(toastStore, 'Source removed!');
+      }
+      catch(err) {
+        console.error(err);
+        showToastError(toastStore, 'There was a problem while trying delete the source...')
+      }
+    }
   }
 </script>
 
-<li class="dark:border-slate-700 rounded-md p-2 mb-2 {get(selectedSource)?.id === source.id ? 'dark:bg-gray-800' : ''}">
-  <a href="/sources/{source.id}"
-    on:click={handleClick}>
+<li class="dark:border-slate-700 rounded-md p-2 mb-2 {selected?.id === source.id ? 'dark:bg-gray-800' : ''}">
+  <a href="/sources/{source.id}" title="View {source.name}" class="group">
     <div class="flex">
       <SourceTypeIcon icon={source.type} pixels="20" />
     </div>
-    <div>
-      <span class="block">{source.name}</span>
+    <div class="relative w-full">
+      <span class="flex flex-col justify-center">{source.name}</span>
       <!-- Add edit and delete buttons here -->
+      <div class="absolute hidden group-hover:block right-0 -top-1.5">
+        <ButtonDelete title="Delete" class=" group-hover:visible"
+          on:click={confirmDelete} />
+      </div>
     </div>
   </a>
 </li>

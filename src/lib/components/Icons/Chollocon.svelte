@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SvelteComponent, afterUpdate, onMount, tick } from 'svelte';
 
-  type IconAlias = 'www' | 'web' | 'device' | 'drive' | 'x' | 'close' | 'copy';
+  type IconAlias = 'www' | 'web' | 'device' | 'drive' | 'x' | 'close' | 'copy' | 'trash';
   
   export let name: IconAlias;
   export let strokeWidth = 2;
@@ -21,6 +21,7 @@
     'x': 'x',
     'close': 'x',
     'copy': 'copy',
+    'trash': 'trash'
   };
 
   onMount(async () => {
@@ -77,7 +78,8 @@
   }
 </script>
 
-<div class="chollocon-container" style={`width: ${size}px; height: ${size}px;`}>
+<div class="chollocon-container" style={`width: ${size}px; height: ${size}px;`}
+  {...$$restProps}>
   {@html svgEl?.outerHTML || ''}
   <div bind:this={target}></div>
 </div>

@@ -18,8 +18,6 @@ export const PopulatedSourceList: Story = {
       type: 'web',
       name: 'My Doc Source',
       location: 'http://example.com',
-      created: '2023-31-01T09:00:00Z',
-      formats: []
     }]
   }
 }

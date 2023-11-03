@@ -30,7 +30,7 @@ export const CopyIcon: Story = {
   args: {
     name: 'copy',
     size: '24',
-    strokeColor: '#770000', // @TODO: fix colour
+    strokeColor: '#770000',
     strokeWidth: 2
   }
 }

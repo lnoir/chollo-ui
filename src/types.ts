@@ -1,8 +1,10 @@
+import type { ToastSettings } from "@skeletonlabs/skeleton";
+
 export type AppModalType = 'component' | 'confirm' | 'prompt' | 'alert';
-export type AppLevelType = 'info' | 'warn' | 'danger';
+export type AppLevelType = 'success' | 'info' | 'warn' | 'error';
 
 export type AppModalOptions = {
-	title: string;
+	title?: string;
 	component?: string;
 	message?: string;
 	level?: AppLevelType;
@@ -15,7 +17,7 @@ export type AppDialogOptions = AppModalOptions & {
 	body?: string;
 };
 
-export type AppMessageOptions = AppModalOptions & {
+export type AppMessageOptions = AppModalOptions & ToastSettings & {
 	type?: AppLevelType;
 	message: string;
 };
@@ -95,7 +97,13 @@ export type Doc = {
 
 export type DocRecord = Doc & ObjectRecord;
 
-export type TaskScheduled = {
+export type TaskInput = {
+  params?: string;
+  steps: TaskStep[];
+  format: number;
+}
+
+export type TaskScheduled = TaskInput & {
   id?: number;
   source: DocSource;
   format: DocFormat;
@@ -109,7 +117,7 @@ export type TaskScheduledRecord = TaskScheduled & ObjectRecord;
 
 export type TaskStep = {
   id?: number;
-  task: TaskScheduled;
+  task?: TaskScheduled;
   position: number;
   agent: string;
   skill: string;

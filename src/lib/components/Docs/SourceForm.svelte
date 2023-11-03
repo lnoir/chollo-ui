@@ -1,8 +1,12 @@
 <script lang="ts">
 	import type { DocSource, DocSourceRecord } from "../../../types";
   import { createForm } from 'felte';
-	import Button from "../Buttons/Button.svelte";
 	import { apiService } from "../../services/api.service";
+	import ButtonClose from "../Buttons/ButtonClose.svelte";
+  import { emit } from '@tauri-apps/api/event';
+	import { showToastError, showToastSuccess } from "../../helpers";
+	import { getDrawerStore, getToastStore } from "@skeletonlabs/skeleton";
+	import { goto } from "$app/navigation";
 
   export let source: DocSource | DocSourceRecord = {
     name: '',
@@ -12,10 +16,11 @@
 
   let errors: Record<string, string[]>;
   let submitted = false;
+  let drawerStore = getDrawerStore();
 
+  const toastStore = getToastStore();
   const { form, touched } = createForm<DocSource>({
     onSubmit(values) {
-      console.log('SUBMIT!')
       submitted = true;
       sendData(values);
     },
@@ -31,12 +36,23 @@
 
   async function sendData(submitted: DocSource) {    
     if (!submitted) return;
-    await apiService.saveDocSource(submitted);
+    try {
+      const latest = await apiService.saveDocSource(submitted);
+      await emit('source-list-refresh');
+      drawerStore.close();
+      showToastSuccess(toastStore, 'Source created!');
+      goto(`/sources/${latest.id}`);
+    }
+    catch(err) {
+      console.error(err);
+      showToastError(toastStore, `There was an error while saving!`);
+    }
   }
 </script>
 
 <section class="container mx-auto">
-  <form class="form" use:form>
+  <form class="form p-6" use:form>
+    <ButtonClose filled={true} on:click={() => emit('drawer:close', 'source-form')} />
     <label class="label mb-8" for="source-name">
       <span class="block mb-2">Name</span>
       <input id="source-name" name="name" type="text" placeholder="Source name" class="input rounded-md" />

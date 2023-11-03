@@ -4,11 +4,14 @@
 
 	import { Modal, initializeStores, type ModalComponent, Toast, getModalStore, getToastStore, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { dialogQueue, toastQueue } from '../stores/app.store';
-	import { showModal, showToast } from '$lib/helpers';
+	import { dialogQueue, selectedSource, toastQueue } from '../stores/app.store';
+	import { setSourceSelectedEmpty, showModal, showToast } from '$lib/helpers';
 	import type { AppDialogOptions, AppMessageOptions } from '../types';
 	import NavBar from '../lib/components/NavBar.svelte';
 	import FormatForm from '../lib/components/Docs/FormatForm.svelte';
+	import TaskForm from '../lib/components/Tasks/TaskForm.svelte';
+	import SourceForm from '../lib/components/Docs/SourceForm.svelte';
+	import { beforeNavigate } from '$app/navigation';
 
 	
 	const modalRegistry: Record<string, ModalComponent> = {
@@ -39,11 +42,22 @@
 			return dialogs;
 		});
 	});
+
+	beforeNavigate(({to}) => {
+		if (!to?.url) return;
+		if (!/^\/sources\/\d+/ig.test(to.url.pathname)) {
+			setSourceSelectedEmpty();
+		}
+	});
 </script>
 
 <Drawer>
 	{#if $drawerStore.id === 'format-form'}
 	<FormatForm />
+	{:else if $drawerStore.id === 'task-form'}
+	<TaskForm />
+	{:else if $drawerStore.id === 'source-form'}
+	<SourceForm />
 	{/if}
 </Drawer>
 

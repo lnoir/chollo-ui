@@ -1,5 +1,7 @@
-import type { ModalStore, ToastStore } from '@skeletonlabs/skeleton';
-import type { AppDialogOptions, AppMessageOptions, ParsedPromptResponse } from '../types';
+import type { DrawerStore, ModalStore, ToastStore } from '@skeletonlabs/skeleton';
+import type { AppDialogOptions, AppMessageOptions, DocSourceRecord } from '../types';
+import { selectedSource } from '../stores/app.store';
+import { get } from 'svelte/store';
 
 /**
  * Displays stated component in a modal
@@ -18,53 +20,44 @@ export function showToast(toastStore: ToastStore, options: AppMessageOptions) {
 	return toastStore;
 }
 
-/**
- * Parses Ollama API response from the /generate endpoing
- *
- * @param readableStream ReadableStream return from body from fetch response
- * @param updater function An optional callback that receives a string of text parsed so far
- * @returns Object { text: string, context: number[] }
- */
-export async function parseResponseStream(
-	readableStream: ReadableStream<Uint8Array>,
-	updater?: (text: string) => void
-): Promise<ParsedPromptResponse> {
-	return new Promise((resolve, reject) => {
-		const reader = readableStream?.getReader();
-		const textDecoder = new TextDecoder('utf-8');
-		let text = '';
+const toastStyles = `h-12 opacity-80`
 
-		// Just to make it easier to pinpoint any issues
-		let currentStreamValue = '';
-		let currentStreamPart = '';
+export function showToastInfo(toastStore: ToastStore, message: string, title?: string) {
+	return showToast(toastStore, {message, title, level:'info', background: 'variant-filled-primary', classes: toastStyles});
+}
 
-		if (updater) updater(text);
+export function showToastSuccess(toastStore: ToastStore, message: string, title?: string) {
+	return showToast(toastStore, {message, title, level:'success', background: 'variant-filled-success', classes: toastStyles});
+}
 
-		const readStream: () => Promise<void> = async () => {
-			if (!reader) return resolve({ text, context: [] });
-			const { value, done } = await reader.read();
-			if (done) return resolve({ text, context: [] });
-			try {
-				const decoded = textDecoder.decode(value);
-				currentStreamValue = decoded;
-				const parts = decoded.split('\n');
-				for (const part of parts.filter((p) => !!p?.trim())) {
-					currentStreamPart = part;
-					const json = JSON.parse(textDecoder.decode(value));
-					if (json.done === true) {
-						const { context } = json;
-						return resolve({ text, context });
-					}
-					text += json.response;
-					if (updater) updater(text);
-				}
-				return readStream();
-			} catch (err) {
-				console.error({ currentStreamPart, currentStreamValue }, err);
-				return reject(err);
-			}
-		};
+export function showToastWarning(toastStore: ToastStore, message: string, title?: string) {
+	return showToast(toastStore, {message, title, level: 'warn', background: 'variant-filled-warning', classes: toastStyles});
+}
 
-		readStream();
+export function showToastError(toastStore: ToastStore, message: string, title?: string) {
+	return showToast(toastStore, {message, title, level: 'error', background: 'variant-filled-error', classes: toastStyles});
+}
+
+
+export function showDrawer(drawerStore: DrawerStore, id: string) {
+	drawerStore.open({
+		id,
+		position: 'right',
+		width: 'w-full md:w-3/4 lg:w-1/2'
 	});
+}
+
+export function setSourceSelectedEmpty() {
+	selectedSource.update(() => ({
+		id: 0,
+		type: 'web',
+		name: '',
+		location: '',
+		created: ''
+	}));
+}
+
+export function getSelectedSource(): DocSourceRecord {
+	const source = get(selectedSource);
+	return source;
 }

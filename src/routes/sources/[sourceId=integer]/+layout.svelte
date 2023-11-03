@@ -15,7 +15,7 @@
 	});
 </script>
 
-<section class="bg-gray-900 h-full rounded-md">
+<section class="bg-gray-800 h-full rounded-md">
 	<SourceDetail {source} />
   <div class="child-route p-4">
     <slot />
