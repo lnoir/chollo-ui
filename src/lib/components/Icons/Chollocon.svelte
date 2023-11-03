@@ -1,6 +1,5 @@
 <script lang="ts">
   import { SvelteComponent, afterUpdate, onMount, tick } from 'svelte';
-	import { appHost } from '../../../stores/app.store';
 
   type IconAlias = 'www' | 'web' | 'device' | 'drive' | 'x' | 'close' | 'copy';
   
@@ -59,14 +58,22 @@
     items.forEach((item) => {
       const currentStrokeWidth = item.getAttribute('stroke-width');
       const currentStroke = item.getAttribute('stroke');
-      
-      if ((currentStrokeWidth !== 'none' && currentStrokeWidth !== '0')) {
-        item.setAttribute('stroke-width', strokeWidth.toString());
-      }
-      if ((currentStroke !== 'none' && currentStroke !== '0')) {
-        item.setAttribute('stroke', strokeColor);
-      }
+      maybeUpdateAttributes({item, currentStroke, currentStrokeWidth});
     });
+    maybeUpdateAttributes({
+      item: element,
+      currentStroke: element.getAttribute('stroke'),
+      currentStrokeWidth: element.getAttribute('stroke-width')
+    });
+  }
+ 
+  function maybeUpdateAttributes({item, currentStroke, currentStrokeWidth}: any) {
+    if ((currentStrokeWidth !== 'none' && currentStrokeWidth !== '0')) {
+      item.setAttribute('stroke-width', strokeWidth.toString());
+    }
+    if ((currentStroke !== 'none' && currentStroke !== '0')) {
+      item.setAttribute('stroke', strokeColor);
+    }
   }
 </script>
 
