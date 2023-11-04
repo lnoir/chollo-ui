@@ -5,13 +5,14 @@
 	import type { DocSource } from '../../types';
 	import { selectedSource } from '../../stores/app.store';
   import { listen } from '@tauri-apps/api/event';
+	import { APP_EVENTS } from '../../constants';
 
   let sources: DocSource[] = [];
   let sub: any;
 
   onMount(async () => {
     refreshSources();
-    sub = await listen('source-list-refresh', refreshSources);
+    sub = await listen(APP_EVENTS.SOURCES_REFRESH, refreshSources);
   });
 
   onDestroy(() => {

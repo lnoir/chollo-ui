@@ -5,8 +5,6 @@
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
   import { emit } from '@tauri-apps/api/event';
 	import { showToastError, showToastSuccess } from "../../helpers";
-	import { getDrawerStore, getToastStore } from "@skeletonlabs/skeleton";
-	import { goto } from "$app/navigation";
 
   export let source: DocSource | DocSourceRecord = {
     name: '',
@@ -16,9 +14,7 @@
 
   let errors: Record<string, string[]>;
   let submitted = false;
-  let drawerStore = getDrawerStore();
 
-  const toastStore = getToastStore();
   const { form, touched } = createForm<DocSource>({
     onSubmit(values) {
       submitted = true;
@@ -38,14 +34,13 @@
     if (!submitted) return;
     try {
       const latest = await apiService.saveDocSource(submitted);
-      await emit('source-list-refresh');
-      drawerStore.close();
-      showToastSuccess(toastStore, 'Source created!');
-      goto(`/sources/${latest.id}`);
+      await emit('sources:refresh');
+      await emit('drawer:close', {id: 'source-form', redirect: `/sources/${latest.id}`});
+      showToastSuccess('Source created!');
     }
-    catch(err) {
+    catch(err: any) {
       console.error(err);
-      showToastError(toastStore, `There was an error while saving!`);
+      showToastError(`There was an error while saving: ${err?.message || err}`);
     }
   }
 </script>

@@ -11,3 +11,14 @@ export const DB_CREATE_STATEMENTS = [
 
 export const sourceKey = Symbol();
 export const formatKey = Symbol();
+
+export const APP_EVENTS = {
+  SOURCES_REFRESH: 'sources:refresh',
+  DRAWER_CLOSE: 'drawer:close'
+};
+
+export const DRAWER_IDS = {
+  SOURCE_FORM: 'source-form',
+  FORMAT_FORM: 'format-form',
+  CONFIG_FORM: 'config-form',
+};

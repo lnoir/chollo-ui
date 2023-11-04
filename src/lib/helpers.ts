@@ -1,6 +1,6 @@
 import type { DrawerStore, ModalStore, ToastStore } from '@skeletonlabs/skeleton';
-import type { AppDialogOptions, AppMessageOptions, DocSourceRecord } from '../types';
-import { selectedSource } from '../stores/app.store';
+import type { AppDialogOptions, AppToastOptions, DocSourceRecord } from '../types';
+import { pushMessage, selectedSource } from '../stores/app.store';
 import { get } from 'svelte/store';
 
 /**
@@ -15,30 +15,32 @@ export function showModal(modalStore: ModalStore, options: AppDialogOptions) {
 	return modalStore;
 }
 
-export function showToast(toastStore: ToastStore, options: AppMessageOptions) {
+export function showToast(toastStore: ToastStore, options: AppToastOptions) {
 	toastStore.trigger(options);
 	return toastStore;
 }
 
 const toastStyles = `h-12 opacity-80`
 
-export function showToastInfo(toastStore: ToastStore, message: string, title?: string) {
-	return showToast(toastStore, {message, title, level:'info', background: 'variant-filled-primary', classes: toastStyles});
+export function showToastInfo(message: string, title?: string) {
+	pushMessage({message, title, type:'info', background: 'variant-filled-primary', classes: toastStyles});
 }
 
-export function showToastSuccess(toastStore: ToastStore, message: string, title?: string) {
-	return showToast(toastStore, {message, title, level:'success', background: 'variant-filled-success', classes: toastStyles});
+export function showToastSuccess(message: string, title?: string) {
+	pushMessage({message, title, type:'success', background: 'variant-filled-success', classes: toastStyles});
 }
 
-export function showToastWarning(toastStore: ToastStore, message: string, title?: string) {
-	return showToast(toastStore, {message, title, level: 'warn', background: 'variant-filled-warning', classes: toastStyles});
+export function showToastWarning(message: string, title?: string) {
+	pushMessage({message, title, type: 'warn', background: 'variant-filled-warning', classes: toastStyles});
 }
 
-export function showToastError(toastStore: ToastStore, message: string, title?: string) {
-	return showToast(toastStore, {message, title, level: 'error', background: 'variant-filled-error', classes: toastStyles});
+export function showToastError(message: string, title?: string) {
+	pushMessage({message, title, type: 'error', background: 'variant-filled-error', classes: toastStyles});
 }
 
-
+/**
+ * @Deprecated
+ */
 export function showDrawer(drawerStore: DrawerStore, id: string) {
 	drawerStore.open({
 		id,

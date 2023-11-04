@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
 	import SourceTypeIcon from "../Icons/IconSourceType.svelte";
-	import { selectedSource } from "../../../stores/app.store";
+	import { pushDialog, selectedSource } from "../../../stores/app.store";
 	import type { DocSourceRecord } from "../../../types";
 	import type { Unsubscriber } from "svelte/store";
-	import { showModal, showToastError, showToastSuccess } from "../../helpers";
-	import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
+	import { showToastError, showToastSuccess } from "../../helpers";
 	import ButtonDelete from "../Buttons/ButtonDelete.svelte";
 	import { apiService } from "../../services/api.service";
   import { emit } from '@tauri-apps/api/event';
@@ -15,9 +14,6 @@
   
   let selected: DocSourceRecord;
   let sub: Unsubscriber;
-
-  const modalStore = getModalStore();
-  const toastStore = getToastStore();
 
   onMount(() => {
     sub = selectedSource.subscribe(latest => {
@@ -30,7 +26,7 @@
   });
   
   function confirmDelete() {
-    showModal(modalStore, {
+    pushDialog({
       type: 'confirm',
       title: `Delete <strong>${source.name}</strong>?`,
       body: 'Are you you want to permanently remove this source?',
@@ -41,13 +37,13 @@
       if (!proceed) return;
       try {
         await apiService.deleteDocSource(source.id);
-        await emit('source-list-refresh');
+        await emit('sources:refresh');
         goto('/sources');
-        showToastSuccess(toastStore, 'Source removed!');
+        showToastSuccess('Source removed!');
       }
       catch(err) {
         console.error(err);
-        showToastError(toastStore, 'There was a problem while trying delete the source...')
+        showToastError('There was a problem while trying delete the source...')
       }
     }
   }

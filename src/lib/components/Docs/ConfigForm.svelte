@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { DocConfig, DocFormat, DocFormatRecord, DocSource, DocSourceRecord } from "../../../types";
+	import type { DocConfig, DocFormatRecord } from "../../../types";
   import { createForm } from 'felte';
 	import { apiService } from "../../services/api.service";
-	import { pushMessage, selectedSource } from "../../../stores/app.store";
-	import { get } from "svelte/store";
   import { emit } from '@tauri-apps/api/event';
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
+	import { APP_EVENTS, DRAWER_IDS } from "../../../constants";
+	import { showToastSuccess } from "../../helpers";
 
   export let config: DocConfig = {
     selector: 'body',
@@ -36,17 +36,13 @@
     const data = {...submitted, source: format.id};
     const latest = await apiService.saveDocConfig(data);
     if (latest.id) {
-      pushMessage({
-        title: 'Config saved!',
-        type: 'info',
-        message: `Configuration saved to '${format.name}'.`
-      });
+      showToastSuccess(`Configuration saved to '${format.name}'.`, 'Config saved!');
       closeForm();
     }
   }
 
   async function closeForm() {
-    emit('drawer:close', 'config-form');
+    emit(APP_EVENTS.DRAWER_CLOSE, {id: DRAWER_IDS.CONFIG_FORM});
   }
 </script>
 

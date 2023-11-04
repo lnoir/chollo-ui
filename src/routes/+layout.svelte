@@ -4,14 +4,16 @@
 
 	import { Modal, initializeStores, type ModalComponent, Toast, getModalStore, getToastStore, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { dialogQueue, selectedSource, toastQueue } from '../stores/app.store';
+	import { dialogQueue, drawerQueue, toastQueue } from '../stores/app.store';
 	import { setSourceSelectedEmpty, showModal, showToast } from '$lib/helpers';
-	import type { AppDialogOptions, AppMessageOptions } from '../types';
+	import type { AppDialogOptions, AppToastOptions } from '../types';
 	import NavBar from '../lib/components/NavBar.svelte';
 	import FormatForm from '../lib/components/Docs/FormatForm.svelte';
 	import TaskForm from '../lib/components/Tasks/TaskForm.svelte';
 	import SourceForm from '../lib/components/Docs/SourceForm.svelte';
-	import { beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
+	import { APP_EVENTS } from '../constants';
+	import { listen } from '@tauri-apps/api/event';
 
 	
 	const modalRegistry: Record<string, ModalComponent> = {
@@ -29,17 +31,36 @@
 			if (!messages.length) return;
       const data = messages.shift();
 			if (data) {
-		  	showToast(toastStore, data as AppMessageOptions);
+		  	showToast(toastStore, data as AppToastOptions);
+				toastQueue.update(() => messages);
       }
-			return messages;
 		});
 		dialogQueue.subscribe((dialogs) => {
 			if (!dialogs) return;
 			const data = dialogs.shift();
 			if (data) {
 			  showModal(modalStore, data as AppDialogOptions);
+				dialogQueue.update(() => dialogs);
       }
-			return dialogs;
+		});
+		drawerQueue.subscribe((ids) => {
+			if (!ids) return;
+			const id = ids.shift();
+			if (id) {
+			  drawerStore.open({
+					id,
+					position: 'right',
+    			width: 'w-full md:w-3/4 lg:w-1/2'
+				});
+				drawerQueue.update(() => ids);
+      }
+		});
+
+		listen(APP_EVENTS.DRAWER_CLOSE, (data: any) => {
+			drawerStore.close();
+			if (data.payload.redirect) {
+				goto(data.payload.redirect);
+			}
 		});
 	});
 

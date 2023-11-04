@@ -2,6 +2,7 @@ import type { ToastSettings } from "@skeletonlabs/skeleton";
 
 export type AppModalType = 'component' | 'confirm' | 'prompt' | 'alert';
 export type AppLevelType = 'success' | 'info' | 'warn' | 'error';
+export type AppDrawerType = 'drawer';
 
 export type AppModalOptions = {
 	title?: string;
@@ -17,8 +18,13 @@ export type AppDialogOptions = AppModalOptions & {
 	body?: string;
 };
 
-export type AppMessageOptions = AppModalOptions & ToastSettings & {
+export type AppToastOptions = AppModalOptions & ToastSettings & {
 	type?: AppLevelType;
+	message: string;
+};
+
+export type AppDrawerOptions = AppModalOptions & {
+	type?: AppDrawerType;
 	message: string;
 };
 

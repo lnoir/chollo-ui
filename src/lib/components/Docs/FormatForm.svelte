@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { DocFormat, DocSource, DocSourceRecord } from "../../../types";
+	import type { DocFormat, DocSourceRecord } from "../../../types";
   import { createForm } from 'felte';
 	import { apiService } from "../../services/api.service";
-	import { pushMessage } from "../../../stores/app.store";
   import { emit } from '@tauri-apps/api/event';
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
-	import { getSelectedSource } from "../../helpers";
+	import { getSelectedSource, showToastSuccess } from "../../helpers";
+	import { APP_EVENTS } from "../../../constants";
 
   export let format: DocFormat = {
     name: '',
@@ -38,17 +38,13 @@
     const data = {...submitted, source: source.id};
     const latest = await apiService.saveDocFormat(data);
     if (latest.id) {
-      pushMessage({
-        title: 'Format added!',
-        type: 'info',
-        message: `'<em>${latest}</em>' saved to ${source.name}`
-      });
+      showToastSuccess(`'<em>${latest}</em>' saved to ${source.name}`, 'Format added!');
       closeForm();
     }
   }
 
   async function closeForm() {
-    emit('drawer:close', 'format-form');
+    emit(APP_EVENTS.DRAWER_CLOSE, {redirect: `/sources/${source.id}/formats`});
   }
 </script>
 
