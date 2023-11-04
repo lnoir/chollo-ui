@@ -23,7 +23,7 @@ class CholloService {
 		this.baseUrl = `${host}/v1`;
 	}
 
-	private async read(url: string) {
+	private async read<T>(url: string): Promise<T[]> {
 		const res = await fetch(`${this.baseUrl}${url}`);
 		return res.json();
 	}
@@ -45,7 +45,6 @@ class CholloService {
 
 	private async delete(path: string) {
 		const url = `${this.baseUrl}${path}`;
-		console.log('@DELETE', url)
 		const res = await fetch(url, {
 			method: 'DELETE',
 			headers: {
@@ -76,10 +75,9 @@ class CholloService {
 		return data.id ? this.put(path, data) : this.post(path, data);
 	}
 
-	async getDocSources(): Promise<any[]> {
+	async getDocSources() {
 		try {
-			const res = await this.read('/docs/source');
-			return res;
+			return this.read<DocSource[]>('/docs/source');
 		}
 		catch(err: any) {
 			error(err.message);
@@ -88,8 +86,8 @@ class CholloService {
 		}
 	}
 
-	async getDocSource(id: string | number): Promise<any> {
-		return this.read(`/docs/source/${id}`);
+	async getDocSource(id: string | number) {
+		return this.read<DocSource>(`/docs/source/${id}`);
 	}
 
 	async saveDocSource(data: DocSource): Promise<any> {
@@ -102,8 +100,8 @@ class CholloService {
 		return this.delete(path);
 	}
 	
-	async getDocFormat(id: string | number): Promise<any> {
-		return this.read(`/docs/format/${id}`);
+	async getDocFormat(id: string | number) {
+		return this.read<DocFormat>(`/docs/format/${id}`);
 	}
 
 	async saveDocFormat(data: DocFormat): Promise<any> {
