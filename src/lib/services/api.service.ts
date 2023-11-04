@@ -1,7 +1,7 @@
 import { error, trace } from 'tauri-plugin-log-api';
 import { cholloHost } from '../../stores/settings.store';
 import { get } from 'svelte/store';
-import type { Doc, DocConfig, DocFormat, DocSource } from '../../types';
+import type { Doc, DocConfig, DocFormat, DocFormatRecord, DocSource, DocSourceRecord } from '../../types';
 
 type RequestOptions = {
 	signal?: AbortSignal;
@@ -23,7 +23,7 @@ class CholloService {
 		this.baseUrl = `${host}/v1`;
 	}
 
-	private async read<T>(url: string): Promise<T[]> {
+	private async read<T>(url: string): Promise<T> {
 		const res = await fetch(`${this.baseUrl}${url}`);
 		return res.json();
 	}
@@ -77,7 +77,7 @@ class CholloService {
 
 	async getDocSources() {
 		try {
-			return this.read<DocSource[]>('/docs/source');
+			return this.read<DocSourceRecord[]>('/docs/source');
 		}
 		catch(err: any) {
 			error(err.message);
@@ -87,7 +87,7 @@ class CholloService {
 	}
 
 	async getDocSource(id: string | number) {
-		return this.read<DocSource>(`/docs/source/${id}`);
+		return this.read<DocSourceRecord>(`/docs/source/${id}`);
 	}
 
 	async saveDocSource(data: DocSource): Promise<any> {
@@ -101,7 +101,7 @@ class CholloService {
 	}
 	
 	async getDocFormat(id: string | number) {
-		return this.read<DocFormat>(`/docs/format/${id}`);
+		return this.read<DocFormatRecord>(`/docs/format/${id}`);
 	}
 
 	async saveDocFormat(data: DocFormat): Promise<any> {
