@@ -18,35 +18,20 @@ export const dbReady = writable(false);
 export const selectedSource = writable<DocSourceRecord>();
 
 export const pushMessage = (data: AppToastOptions) => {
-	pushModalItem(data);
+	updateQueue<AppToastOptions>(toastQueue, data);
 };
 
 export const pushDialog = (data: AppDialogOptions) => {
-	pushModalItem(data);
+	updateQueue<AppDialogOptions>(dialogQueue, data);
 };
 
 export const pushDrawer = (id: string) => {
-	drawerQueue.update(items => {
-		items.push(id)
-		return items
-	});
+	updateQueue<string>(drawerQueue, id);
 }
 
-export const pushModalItem = (
-	data: AppDialogOptions | AppToastOptions
-) => {
-	let queue;
-	switch (data.type) {
-		case 'component':
-		case 'confirm':
-		case 'prompt':
-			queue = dialogQueue;
-			break;
-		default:
-			queue = toastQueue;
-	}
-	queue.update((items) => {
+function updateQueue<D>(queue: Writable<any>, data: D) {
+	queue.update(items => {
 		items.push(data);
-		return items;
-	});
-};
+		return items
+	});	
+}
