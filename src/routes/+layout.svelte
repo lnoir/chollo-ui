@@ -87,7 +87,7 @@
 
 <div class="fixed h-full w-full top-0 left-0 p-0 m-9=0 pointer-events-none -z-10">
 	<div class="flex flex-col h-full w-full justify-center">
-		<span class="text-3xl m-auto text-slate-300 dark:text-slate-700">Chollo</span>
+		<span class="text-3xl m-auto text-slate-300 dark:text-slate-700/60">Chollo</span>
 	</div>
 </div>
 

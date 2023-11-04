@@ -10,7 +10,7 @@
   let source: DocSourceRecord = get(selectedSource);
 </script>
 
-<div class="dark:bg-gray-800/90 p-6 rounded-md">
+<div class="dark:bg-gray-700/60 p-6 rounded-md">
   <ButtonClose on:click={() => goto(`/sources/${source.id}`)} />
   <h2 class="text-2xl">Formats</h2>
   {#if source}
