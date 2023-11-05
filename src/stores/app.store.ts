@@ -1,9 +1,11 @@
 import { writable, type Writable } from 'svelte/store';
 import type {
-	AppDialogOptions,
 	AppToastOptions,
 	AppModalOptions,
 	DocSourceRecord,
+	DocFormatRecord,
+	TaskScheduledRecord,
+	TaskStepRecord,
 } from '../types';
 
 const apiHost = 'http://127.0.0.1:38440';
@@ -16,18 +18,13 @@ export const loading: Writable<boolean> = writable(false);
 export const activeModals = writable({});
 export const dbReady = writable(false);
 export const selectedSource = writable<DocSourceRecord>();
+export const selectedFormat = writable<DocFormatRecord>();
+export const selectedTask = writable<TaskScheduledRecord>();
+export const selectedStep = writable<TaskStepRecord>();
 
 export const pushMessage = (data: AppToastOptions) => {
 	updateQueue<AppToastOptions>(toastQueue, data);
 };
-
-export const pushDialog = (data: AppDialogOptions) => {
-	updateQueue<AppDialogOptions>(dialogQueue, data);
-};
-
-export const pushDrawer = (id: string) => {
-	updateQueue<string>(drawerQueue, id);
-}
 
 function updateQueue<D>(queue: Writable<any>, data: D) {
 	queue.update(items => {

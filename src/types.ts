@@ -68,6 +68,7 @@ export type DocSource = {
 };
 
 export type DocSourceRecord = DocSource & ObjectRecord & {
+  id: number;
   formats?: DocFormatRecord[];
 };
 
@@ -103,27 +104,31 @@ export type Doc = {
 
 export type DocRecord = Doc & ObjectRecord;
 
-export type TaskInput = {
-  params?: string;
-  steps: TaskStep[];
-  format: number;
+export type TaskScheduledIn = {
+  id?: number;
+  name?: number;
+  steps?: TaskStep[];
+  format?: number;
+  source?: number;
+  scheduled?: string;
 }
 
-export type TaskScheduled = TaskInput & {
-  id?: number;
+export type TaskScheduled = TaskScheduledIn & {
   source: DocSource;
   format: DocFormat;
-  params?: string;
   steps: TaskStep[];
-  scheduled: string;
+  scheduled: string | null;
   output: TaskOutput[];
 };
 
-export type TaskScheduledRecord = TaskScheduled & ObjectRecord;
+export type TaskScheduledRecord = TaskScheduled & ObjectRecord & {
+  id: number;
+  steps: TaskStepRecord[];
+};
 
 export type TaskStep = {
   id?: number;
-  task?: TaskScheduled;
+  task?: number;
   position: number;
   agent: string;
   skill: string;
@@ -131,8 +136,14 @@ export type TaskStep = {
   filters?: object[];
 };
 
-export type TaskStepRecord = TaskStep & ObjectRecord;
+export type TaskStepRecord = TaskStep & ObjectRecord & {
+  task: TaskScheduled;
+};
 
 export type TaskOutput = {
 	[key: string]: any;
 };
+
+export interface GenericHandlerFn {
+  (): Promise<any>;
+}

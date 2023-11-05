@@ -10,6 +10,7 @@
 
 	afterNavigate(async ({ to }) => {
 		sourceId = Number(to?.params?.sourceId);
+		if (!sourceId) return;
 		source = await apiService.getDocSource(sourceId);
     selectedSource.update(() => source);
 	});
@@ -21,4 +22,3 @@
     <slot />
   </div>
 </section>
-

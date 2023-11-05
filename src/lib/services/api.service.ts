@@ -1,13 +1,15 @@
 import { error, trace } from 'tauri-plugin-log-api';
 import { cholloHost } from '../../stores/settings.store';
 import { get } from 'svelte/store';
-import type { Doc, DocConfig, DocFormat, DocFormatRecord, DocSource, DocSourceRecord } from '../../types';
+import type { 
+	Doc, DocConfig, DocFormat, DocFormatRecord, DocSource, DocSourceRecord, TaskScheduledIn, TaskScheduledRecord, TaskStep
+} from '../../types';
 
 type RequestOptions = {
 	signal?: AbortSignal;
 };
 
-type WritableData = DocSource | DocFormat | DocConfig | Doc;
+type WritableData = DocSource | DocFormat | DocConfig | Doc | TaskScheduledIn;
 
 type WriteMethods = 'POST' | 'PUT';
 
@@ -105,12 +107,35 @@ class CholloService {
 	}
 
 	async saveDocFormat(data: DocFormat): Promise<any> {
-		const path = this.preparePath(`/docs/format`, data);
+		const path = this.preparePath('/docs/format', data);
 		return this.putOrPost(path, data);
 	}
 	
 	async saveDocConfig(data: DocConfig): Promise<any> {
-		const path = this.preparePath(`/docs/config`, data);
+		const path = this.preparePath('/docs/config', data);
+		return this.putOrPost(path, data);
+	}
+
+	async getTasks() {
+		return this.read<TaskScheduledRecord>('/tasks/scheduled');
+	}
+
+	async saveTaskScheduled(data: TaskScheduledIn) {
+		const path = this.preparePath('/tasks/scheduled', data);
+		return this.putOrPost(path, data);
+	}
+		
+	async deleteTask(id: number): Promise<any> {
+		const path = `/tasks/scheduled/${id}`;
+		return this.delete(path);
+	}
+
+	async getTask(id: string | number) {
+		return this.read<TaskScheduledRecord>(`/tasks/scheduled/${id}`);
+	}
+
+	async saveTaskStep(data: TaskStep) {
+		const path = this.preparePath('/tasks/step', data);
 		return this.putOrPost(path, data);
 	}
 }

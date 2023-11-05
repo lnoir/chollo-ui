@@ -14,11 +14,28 @@ export const formatKey = Symbol();
 
 export const APP_EVENTS = {
   SOURCES_REFRESH: 'sources:refresh',
-  DRAWER_CLOSE: 'drawer:close'
+  TASKS_REFRESH: 'tasks:refresh',
+  DRAWER_OPEN: 'drawer:open',
+  DRAWER_CLOSE: 'drawer:close',
+  DIALOG_OPEN: 'dialog:open',
 };
 
 export const DRAWER_IDS = {
   SOURCE_FORM: 'source-form',
   FORMAT_FORM: 'format-form',
   CONFIG_FORM: 'config-form',
+  TASK_FORM: 'task-form',
+  STEP_FORM: 'step-form',
 };
+
+// @TODO: load this data from the API
+export const AGENTS = {
+  JOB: {
+    name: 'Job', 
+    value: 'job',
+    skills: [
+      { name: 'Job-Matching', value: 'runJobSkillMatchingAgent' },
+      { name: 'Cover Letter', value: 'runCoverLetterWriterAgent' },
+    ]
+  }
+}

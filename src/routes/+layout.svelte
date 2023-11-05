@@ -5,15 +5,17 @@
 	import { Modal, initializeStores, type ModalComponent, Toast, getModalStore, getToastStore, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { dialogQueue, drawerQueue, toastQueue } from '../stores/app.store';
-	import { setSourceSelectedEmpty, showModal, showToast } from '$lib/helpers';
+	import { setSelectedFormatEmpty, setSelectedSourceEmpty, showModal, showToast } from '$lib/helpers';
 	import type { AppDialogOptions, AppToastOptions } from '../types';
 	import NavBar from '../lib/components/NavBar.svelte';
 	import FormatForm from '../lib/components/Docs/FormatForm.svelte';
 	import TaskForm from '../lib/components/Tasks/TaskForm.svelte';
 	import SourceForm from '../lib/components/Docs/SourceForm.svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import { APP_EVENTS } from '../constants';
+	import { APP_EVENTS, DRAWER_IDS } from '../constants';
 	import { listen } from '@tauri-apps/api/event';
+	import ConfigForm from '../lib/components/Docs/ConfigForm.svelte';
+	import StepForm from '../lib/components/Tasks/StepForm.svelte';
 
 	
 	const modalRegistry: Record<string, ModalComponent> = {
@@ -43,42 +45,48 @@
 				dialogQueue.update(() => dialogs);
       }
 		});
-		drawerQueue.subscribe((ids) => {
-			if (!ids) return;
-			const id = ids.shift();
-			if (id) {
-			  drawerStore.open({
-					id,
-					position: 'right',
-    			width: 'w-full md:w-3/4 lg:w-1/2'
-				});
-				drawerQueue.update(() => ids);
-      }
+		await listen(APP_EVENTS.DRAWER_OPEN, (data) => {
+			const id = data.payload as string;
+			drawerStore.open({
+				id,
+				position: 'right',
+				width: 'w-full md:w-3/4 lg:w-1/2',
+			});
 		});
-
-		listen(APP_EVENTS.DRAWER_CLOSE, (data: any) => {
+		await listen(APP_EVENTS.DRAWER_CLOSE, (data: any) => {
 			drawerStore.close();
 			if (data.payload.redirect) {
 				goto(data.payload.redirect);
 			}
 		});
+		await listen(APP_EVENTS.DIALOG_OPEN, (data: any) => {
+			showModal(modalStore, data);
+		});
 	});
 
 	beforeNavigate(({to}) => {
+		console.log(to?.url.href)
 		if (!to?.url) return;
+		if (!/\/format\/\d+(.*)?/ig.test(to.url.pathname)) {
+			setSelectedFormatEmpty();
+		}
 		if (!/^\/sources\/\d+/ig.test(to.url.pathname)) {
-			setSourceSelectedEmpty();
+			setSelectedSourceEmpty();
 		}
 	});
 </script>
 
-<Drawer>
-	{#if $drawerStore.id === 'format-form'}
+<Drawer on:drawer={() => console.log('$id:', $drawerStore.id)} on:backdrop={() => {history.back()}}>
+	{#if $drawerStore.id === DRAWER_IDS.FORMAT_FORM}
 	<FormatForm />
-	{:else if $drawerStore.id === 'task-form'}
-	<TaskForm />
-	{:else if $drawerStore.id === 'source-form'}
+	{:else if $drawerStore.id === DRAWER_IDS.SOURCE_FORM}
 	<SourceForm />
+	{:else if $drawerStore.id === DRAWER_IDS.CONFIG_FORM}
+	<ConfigForm />
+	{:else if $drawerStore.id === DRAWER_IDS.TASK_FORM}
+	<TaskForm />
+	{:else if $drawerStore.id === DRAWER_IDS.STEP_FORM}
+	<StepForm />
 	{/if}
 </Drawer>
 

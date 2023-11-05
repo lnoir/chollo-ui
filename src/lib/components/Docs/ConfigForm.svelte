@@ -1,21 +1,22 @@
 <script lang="ts">
-	import type { DocConfig, DocFormatRecord } from "../../../types";
+	import type { DocConfig } from "../../../types";
   import { createForm } from 'felte';
 	import { apiService } from "../../services/api.service";
   import { emit } from '@tauri-apps/api/event';
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
 	import { APP_EVENTS, DRAWER_IDS } from "../../../constants";
-	import { showToastSuccess } from "../../helpers";
+	import { showToastError, showToastSuccess } from "../../helpers";
+	import { selectedFormat } from "../../../stores/app.store";
+	import { get } from "svelte/store";
 
-  export let config: DocConfig = {
-    selector: 'body',
+  
+  let errors: Record<string, string[]>;
+  let submitted = false;
+  let config: DocConfig = {
+    selector: '',
     selector_type: 'element',
     js: false,
   };
-  export let format: DocFormatRecord;
-
-  let errors: Record<string, string[]>;
-  let submitted = false;
 
   const { form } = createForm<DocConfig>({
     onSubmit(values) {
@@ -23,9 +24,9 @@
       sendData(values);
     },
     validate(values) {
-      errors = { name: [], type: [], location: [] };
-      if (!values.selector?.trim()) errors.name.push('Selector is required');
-      if (!values.selector_type?.trim()) errors.selector_type.push('Selector type is required');
+      errors = { selector: [], selector_type: [], js: [] };
+      if (!values.selector?.trim()) errors.selector.push('Selector is required');
+      if (!values.selector_type) errors.selector_type.push('Selector type is required');
       return errors;
     },
     initialValues: {...config}
@@ -33,49 +34,58 @@
 
   async function sendData(submitted: DocConfig) {    
     if (!submitted) return;
-    const data = {...submitted, source: format.id};
-    const latest = await apiService.saveDocConfig(data);
-    if (latest.id) {
+    try {
+      const format = get(selectedFormat);
+      const data = {...submitted, format: format.id};
+      await apiService.saveDocConfig(data);
       showToastSuccess(`Configuration saved to '${format.name}'.`, 'Config saved!');
       closeForm();
+    }
+    catch(err) {
+      showToastError('Failed to save config');
     }
   }
 
   async function closeForm() {
-    emit(APP_EVENTS.DRAWER_CLOSE, {id: DRAWER_IDS.CONFIG_FORM});
+    const redirect = window.location.pathname.split(/\/\d+\/config$/)[0];
+    emit(
+      APP_EVENTS.DRAWER_CLOSE,
+      {id: DRAWER_IDS.CONFIG_FORM, redirect}
+    );
   }
 </script>
 
 <section class="container mx-auto">
   <form class="form p-6" use:form>
+    
     <ButtonClose filled={true} on:click={closeForm} />
-    <label class="label my-8" for="format-name">
-      <span class="block mb-2">Name</span>
-      <input id="format-name" name="name" type="text" placeholder="Format name" class="input rounded-md" />
-      {#if submitted && errors.name?.length}
-      {errors.name}
-      {/if}
-    </label>
 
-    <label class="label mb-8" for="format-type">
-      <span class="block mb-2">Type</span>
-      <select id="format-type" name="type" class="select py-4">
-        <option value="html">HTML</option>
-        <option value="json">JSON</option>
-        <option value="xml">XML</option>
-        <option value="text">TEXT</option>
+    <h2 class="text-gray-400 mb-8">
+      <span class="font-mono text-sm text-gray-500 pr-2">{$selectedFormat.type}</span>{$selectedFormat.name}
+    </h2>
+
+    <label class="label mb-8" for="config-selector-type">
+      <span class="block mb-2">Selector Type</span>
+      <select id="config-selector-type" name="selector-type" class="select py-4">
+        <option value="element">Element</option>
+        <option value="pattern">Pattern</option>
       </select>
     </label>
-
-    <label class="label mb-8" for="format-location">
-      <span class="block mb-2">Location</span>
-      <input id="format-location" name="location" type="text" placeholder="/relative-path" class="input rounded-md" />
-      {#if submitted && errors.location?.length}
-      {errors.location}
+    
+    <label class="label my-8" for="format-name">
+      <span class="block mb-2">Selector</span>
+      <input id="config-selector" name="selector" type="text" placeholder="div.some-class" class="input rounded-md" />
+      {#if submitted && errors.selector?.length}
+      {errors.selector}
       {/if}
+    </label>
+
+    <label class="label mb-8 cursor-pointer" for="config-js">
+      <span class="block mb-2">Enable JavaScript?</span>
+      <input id="config-js" name="js" type="checkbox" class="input rounded-md" />
     </label>
 
     <!-- <Button type="submit" title="Save format" /> -->
-    <button type="submit" title="Save format" class="btn rounded-md variant-filled-primary">Create format</button>
+    <button type="submit" title="Save format" class="btn rounded-md variant-filled-primary">Save config</button>
   </form>
 </section>

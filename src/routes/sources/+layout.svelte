@@ -2,12 +2,12 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { apiService } from '../../lib/services/api.service';
 	import SourceList from '$components/Docs/SourceList.svelte';
-	import type { DocSource } from '../../types';
+	import type { DocSourceRecord } from '../../types';
 	import { selectedSource } from '../../stores/app.store';
   import { listen } from '@tauri-apps/api/event';
 	import { APP_EVENTS } from '../../constants';
 
-  let sources: DocSource[] = [];
+  let sources: DocSourceRecord[] = [];
   let sub: any;
 
   onMount(async () => {

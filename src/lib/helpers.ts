@@ -1,7 +1,9 @@
 import type { DrawerStore, ModalStore, ToastStore } from '@skeletonlabs/skeleton';
-import type { AppDialogOptions, AppToastOptions, DocSourceRecord } from '../types';
-import { pushMessage, selectedSource } from '../stores/app.store';
+import type { AppDialogOptions, AppToastOptions, DocFormatRecord, DocSourceRecord } from '../types';
+import { pushMessage, selectedFormat, selectedSource } from '../stores/app.store';
 import { get } from 'svelte/store';
+import { emit } from '@tauri-apps/api/event';
+import { APP_EVENTS } from '../constants';
 
 /**
  * Displays stated component in a modal
@@ -49,7 +51,7 @@ export function showDrawer(drawerStore: DrawerStore, id: string) {
 	});
 }
 
-export function setSourceSelectedEmpty() {
+export function setSelectedSourceEmpty() {
 	selectedSource.update(() => ({
 		id: 0,
 		type: 'web',
@@ -62,4 +64,43 @@ export function setSourceSelectedEmpty() {
 export function getSelectedSource(): DocSourceRecord {
 	const source = get(selectedSource);
 	return source;
+}
+
+export function setSelectedFormatEmpty() {
+	selectedFormat.update(() => ({
+		id: 0,
+		type: 'html',
+		name: '',
+		location: '',
+		created: ''
+	}));
+}
+
+export function getSelectedFormat(): DocFormatRecord {
+	const format = get(selectedFormat);
+	return format;
+}
+
+export function openDrawer(id: string) {
+	emit(APP_EVENTS.DRAWER_OPEN, id);
+}
+
+export function openDialog(data: AppDialogOptions) {
+	emit(APP_EVENTS.DIALOG_OPEN, data);
+}
+
+export function formatDate(d: string | Date) {
+	const date = typeof d === 'string' ? new Date(d) : d;
+	return date.toISOString().split('T')[0];
+}
+
+export function formatTime(d: string | Date) {
+	const opts = {
+		hour12: false,
+		hour: "2-digit",
+		minute: "numeric"
+	} as Intl.DateTimeFormatOptions;
+	const date = typeof d === 'string' ? new Date(d) : d; 
+	const formatted = new Intl.DateTimeFormat('en-GB', opts).format(date);
+	return formatted;
 }

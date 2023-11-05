@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DRAWER_IDS } from "../../../constants";
-	import { pushDrawer } from "../../../stores/app.store";
+	import { openDrawer } from "../../../lib/helpers";
 
-	pushDrawer(DRAWER_IDS.SOURCE_FORM);
+	openDrawer(DRAWER_IDS.SOURCE_FORM);
 </script>

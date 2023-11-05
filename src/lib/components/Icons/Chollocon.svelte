@@ -1,7 +1,19 @@
 <script lang="ts">
   import { SvelteComponent, afterUpdate, onMount, tick } from 'svelte';
 
-  type IconAlias = 'www' | 'web' | 'device' | 'drive' | 'x' | 'close' | 'copy' | 'trash';
+  const iconAliases = {
+    'www': 'www',
+    'web': 'www',
+    'device': 'device',
+    'drive': 'device',
+    'x': 'x',
+    'close': 'x',
+    'copy': 'copy',
+    'trash': 'trash',
+    'tool': 'tool',
+    'arrows': 'arrows-x'
+  };
+  type IconAlias = keyof typeof iconAliases;
   
   export let name: IconAlias;
   export let strokeWidth = 2;
@@ -13,16 +25,6 @@
   let target: HTMLDivElement;
   let component: SvelteComponent;
 
-  const iconAliases = {
-    'www': 'www',
-    'web': 'www',
-    'device': 'device',
-    'drive': 'device',
-    'x': 'x',
-    'close': 'x',
-    'copy': 'copy',
-    'trash': 'trash'
-  };
 
   onMount(async () => {
     setIconFilename();

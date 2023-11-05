@@ -5,6 +5,7 @@
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
   import { emit } from '@tauri-apps/api/event';
 	import { showToastError, showToastSuccess } from "../../helpers";
+	import { APP_EVENTS } from "../../../constants";
 
   export let source: DocSource | DocSourceRecord = {
     name: '',
@@ -34,8 +35,8 @@
     if (!submitted) return;
     try {
       const latest = await apiService.saveDocSource(submitted);
-      await emit('sources:refresh');
-      await emit('drawer:close', {id: 'source-form', redirect: `/sources/${latest.id}`});
+      await emit(APP_EVENTS.SOURCES_REFRESH);
+      await emit(APP_EVENTS.DRAWER_CLOSE, {id: 'source-form', redirect: `/sources/${latest.id}`});
       showToastSuccess('Source created!');
     }
     catch(err: any) {

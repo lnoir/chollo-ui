@@ -7,10 +7,10 @@
       <a href="/">Dashboard</a>
     </li>
     <li class="mr-6">
-	  <a href="/sources">Sources</a>
-	</li>
-	<li class="mr-6">
-	  <a href="/tasks">Tasks</a>
-	</li>
+      <a href="/sources">Sources</a>
+    </li>
+    <li class="mr-6">
+      <a href="/tasks">Tasks</a>
+    </li>
   </ul>
 </nav>
