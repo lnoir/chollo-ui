@@ -32,6 +32,13 @@
           "http://localhost:38440/*",
           "http://127.0.0.1:38440/*"
         ]
+      },
+      "shell": {
+        "all": false,
+        "execute": false,
+        "open": true,
+        "scope": [],
+        "sidecar": false
       }
     },
     "bundle": {
