@@ -12,9 +12,8 @@ import { APP_EVENTS } from '../constants';
  * @param component string Name of the component (must be registered in modal regitry)
  * @returns
  */
-export function showModal(modalStore: ModalStore, options: AppDialogOptions) {
-	modalStore.trigger(options);
-	return modalStore;
+export function showModal(options: AppDialogOptions) {
+	emit(APP_EVENTS.DIALOG_OPEN, options);
 }
 
 export function showToast(toastStore: ToastStore, options: AppToastOptions) {

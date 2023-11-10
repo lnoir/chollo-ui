@@ -21,6 +21,7 @@ export const selectedSource = writable<DocSourceRecord>();
 export const selectedFormat = writable<DocFormatRecord>();
 export const selectedTask = writable<TaskScheduledRecord>();
 export const selectedStep = writable<TaskStepRecord>();
+export const activeOutput = writable<any>();
 
 export const pushMessage = (data: AppToastOptions) => {
 	updateQueue<AppToastOptions>(toastQueue, data);

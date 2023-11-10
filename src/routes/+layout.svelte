@@ -16,10 +16,11 @@
 	import { listen } from '@tauri-apps/api/event';
 	import ConfigForm from '../lib/components/Docs/ConfigForm.svelte';
 	import StepForm from '../lib/components/Tasks/StepForm.svelte';
+	import TaskOutput from '../lib/components/Tasks/TaskOutput.svelte';
 
 	
 	const modalRegistry: Record<string, ModalComponent> = {
-		// settings: { ref: Settings }
+		'task-output': { ref: TaskOutput }
 	};
 
 	initializeStores();
@@ -37,13 +38,20 @@
 				toastQueue.update(() => messages);
       }
 		});
-		dialogQueue.subscribe((dialogs) => {
-			if (!dialogs) return;
-			const data = dialogs.shift();
-			if (data) {
-			  showModal(modalStore, data as AppDialogOptions);
-				dialogQueue.update(() => dialogs);
-      }
+		/*await listen(APP_EVENTS.DIALOG_OPEN, (data: any) => {
+			showModal(modalStore, data);
+		});*/
+		await listen(APP_EVENTS.DIALOG_OPEN, (data) => {
+			const {type, component, meta}  = data.payload as any;
+			console.log(type, component, meta)
+			modalStore.trigger({
+				type,
+				component,
+				meta,
+			});
+		});
+		await listen(APP_EVENTS.DIALOG_CLOSE, () => {
+			modalStore.close();
 		});
 		await listen(APP_EVENTS.DRAWER_OPEN, (data) => {
 			const id = data.payload as string;
@@ -58,9 +66,6 @@
 			if (data.payload.redirect) {
 				goto(data.payload.redirect);
 			}
-		});
-		await listen(APP_EVENTS.DIALOG_OPEN, (data: any) => {
-			showModal(modalStore, data);
 		});
 	});
 

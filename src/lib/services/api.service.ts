@@ -70,7 +70,7 @@ class CholloService {
 		const p = data.id
 			? path + `/${data.id}`
 			: path;
-		return path;
+		return p;
 	}
 
 	async putOrPost(path: string, data: WritableData) {
@@ -137,6 +137,18 @@ class CholloService {
 	async saveTaskStep(data: TaskStep) {
 		const path = this.preparePath('/tasks/step', data);
 		return this.putOrPost(path, data);
+	}
+
+	async enableTaskJob(taskId: number) {
+		return this.post(`/tasks/scheduled/${taskId}/enable`, {id: taskId});
+	}
+
+	async disableTaskJob(taskId: number) {
+		return this.delete(`/tasks/scheduled/${taskId}/disable`);
+	}
+
+	async getTaskJob(taskId: number) {
+		return this.read(`/tasks/scheduled/${taskId}/job`);
 	}
 }
 

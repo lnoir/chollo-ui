@@ -4,7 +4,6 @@
 	import { openDrawer } from "../../../../../lib/helpers";
 
   afterNavigate(() => {
-    console.log('@after (tasks/create)')
     openDrawer(DRAWER_IDS.STEP_FORM);
   });
 </script>

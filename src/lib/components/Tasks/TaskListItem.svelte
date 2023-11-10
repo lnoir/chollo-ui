@@ -10,6 +10,7 @@
   export let task: TaskScheduledRecord;
 
   function clickAction() {
+    console.log('@task', task);
     selectedTask.update(() => task);
   }
 

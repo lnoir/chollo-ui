@@ -16,6 +16,7 @@ export type AppModalOptions = {
 export type AppDialogOptions = AppModalOptions & {
 	type: AppModalType;
 	body?: string;
+  meta?: any;
 };
 
 export type AppToastOptions = AppModalOptions & ToastSettings & {
@@ -83,11 +84,19 @@ export type DocFormat = {
 
 export type DocFormatRecord = DocFormat & ObjectRecord;
 
+type PropertyType = 'string' | 'number';
+
+export type PropertySelectorMap = {
+  property: string;
+  selector: string;
+  type: PropertyType;
+}
+
 export type DocConfig = {
   id?: number;
   selector_type?: 'element' | 'pattern';
   selector?: string;
-  map?: Record<string, any>;
+  map: PropertySelectorMap[];
   js: boolean;
 };
 
@@ -113,11 +122,30 @@ export type TaskScheduledIn = {
   scheduled?: string;
 }
 
+enum units {
+  'minute',
+  'minutes',
+  'hour',
+  'hours',
+  'week',
+  'weeks',
+  'month',
+  'months'
+};
+
+type ValidUnits = keyof typeof units;
+
+export type Recurrence = {
+  unit: ValidUnits;
+  value: number;
+}
+
 export type TaskScheduled = TaskScheduledIn & {
   source: DocSource;
   format: DocFormat;
   steps: TaskStep[];
   scheduled: string | null;
+  interval: Recurrence,
   output: TaskOutput[];
 };
 
@@ -140,7 +168,32 @@ export type TaskStepRecord = TaskStep & ObjectRecord & {
   task: TaskScheduled;
 };
 
-export type TaskOutput = {
+export type TaskOutput = ObjectRecord & {
+  job: number;
+  task: number;
+  agent: string;
+  skill: string;
+  json?: TaskOutputJson;
+  text?: string;
+}
+
+type TaskOutputResult = {
+  match?: boolean;
+  confidence: string;
+  reasoning: string;
+}
+
+type TaskOutputMetadata = {
+  source?: string;
+  content?: any;
+  result?: TaskOutputResult;
+  preview?: TaskOutputResult; // legacy
+  [key: string]: any;
+}
+
+export type TaskOutputJson = {
+  pageContent: string;
+  metadata: TaskOutputMetadata;
 	[key: string]: any;
 };
 

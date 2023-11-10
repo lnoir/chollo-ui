@@ -18,6 +18,7 @@ export const APP_EVENTS = {
   DRAWER_OPEN: 'drawer:open',
   DRAWER_CLOSE: 'drawer:close',
   DIALOG_OPEN: 'dialog:open',
+  DIALOG_CLOSE: 'dialog:close',
 };
 
 export const DRAWER_IDS = {
