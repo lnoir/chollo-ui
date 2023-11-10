@@ -42,12 +42,15 @@
 			showModal(modalStore, data);
 		});*/
 		await listen(APP_EVENTS.DIALOG_OPEN, (data) => {
-			const {type, component, meta}  = data.payload as any;
-			console.log(type, component, meta)
+			const {title, type, component, meta, body, response}  = data.payload as any;
+			console.log(type, component, meta, body, response)
 			modalStore.trigger({
+				title,
 				type,
 				component,
 				meta,
+				body,
+				response,
 			});
 		});
 		await listen(APP_EVENTS.DIALOG_CLOSE, () => {

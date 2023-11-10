@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { TaskScheduledRecord } from "../../../types";
 	import Button from "../Buttons/Button.svelte";
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import ButtonClose from "../Buttons/ButtonClose.svelte";
 	import Chollocon from "../Icons/Chollocon.svelte";
-	import { afterUpdate } from "svelte";
+	import { afterUpdate, onMount } from "svelte";
 	import { apiService } from "../../services/api.service";
 	import { showToastError, showToastSuccess } from "../../helpers";
 
@@ -57,15 +57,24 @@
     } 
   }
 
-  afterUpdate(async () => {
+  async function setup() {
     if (!task || job) return;
+    if (!task?.id) return console.warn('No task available.');
     try {
       job = await apiService.getTaskJob(task?.id);
     }
     catch(err) {
       console.warn(err);
     }
-    console.log(job);
+    console.log('@job setup:', job);
+  }
+
+  onMount(() => {
+    setup();
+  });
+
+  afterNavigate(async () => {
+    setup();
   });
 </script>
 
